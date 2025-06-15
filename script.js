@@ -583,8 +583,39 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// Handle sticky controls behavior
+function handleStickyControls() {
+    const controlsSticky = document.getElementById('controlsSticky');
+    const stats = document.querySelector('.stats');
+    
+    if (!controlsSticky || !stats) return;
+    
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Stats are visible, make controls less prominent
+                    controlsSticky.classList.remove('enhanced');
+                } else {
+                    // Stats are not visible, make controls more prominent
+                    controlsSticky.classList.add('enhanced');
+                }
+            });
+        },
+        {
+            threshold: 0.1,
+            rootMargin: '-50px 0px 0px 0px'
+        }
+    );
+    
+    observer.observe(stats);
+}
+
 // Initialize the application
-document.addEventListener('DOMContentLoaded', initializeApp);
+document.addEventListener('DOMContentLoaded', () => {
+    initializeApp();
+    handleStickyControls();
+});
 
 // Add smooth scrolling for better UX
 document.documentElement.style.scrollBehavior = 'smooth';

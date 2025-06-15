@@ -159,16 +159,38 @@ body {
 
 
 /* Controls */
+.controls-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.controls-sticky.enhanced {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border-bottom-color: #cbd5e0;
+}
+
 .controls {
     background: white;
     border-radius: 15px;
     padding: 1.5rem;
-    margin-bottom: 2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
     align-items: center;
+}
+
+.controls-sticky .controls {
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 1rem 0;
 }
 
 .search-box {
@@ -225,41 +247,47 @@ body {
 .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
 }
 
 .stat-card {
     background: white;
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: 2rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    gap: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e2e8f0;
 }
 
 .stat-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
 }
 
 .stat-card i {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: #3182ce;
+    flex-shrink: 0;
 }
 
 .stat-number {
     display: block;
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: #2d3748;
+    line-height: 1.1;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #718096;
     font-weight: 500;
+    margin-top: 0.25rem;
 }
 
 /* Sites grid */
@@ -826,6 +854,10 @@ body {
         flex-direction: column;
         align-items: stretch;
     }
+    
+    .controls-sticky .controls {
+        padding: 1rem;
+    }
 
     .search-box {
         min-width: auto;
@@ -837,6 +869,22 @@ body {
 
     .stats {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+    
+    .stat-card i {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
     }
 
     .sites-grid {

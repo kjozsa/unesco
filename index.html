@@ -40,27 +40,6 @@
     <main class="main">
         <div class="container">
 
-            <div class="controls">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search heritage sites...">
-                </div>
-                <div class="filters">
-                    <select id="categoryFilter">
-                        <option value="all">All Categories</option>
-                        <option value="Cultural">Cultural</option>
-                        <option value="Natural">Natural</option>
-                    </select>
-                    <select id="distanceFilter">
-                        <option value="all">All Distances</option>
-                        <option value="0-100">0-100 km</option>
-                        <option value="100-500">100-500 km</option>
-                        <option value="500-1000">500-1000 km</option>
-                        <option value="1000+">1000+ km</option>
-                    </select>
-                </div>
-            </div>
-
             <div class="stats">
                 <div class="stat-card">
                     <i class="fas fa-map-marker-alt"></i>
@@ -92,6 +71,34 @@
                 </div>
             </div>
 
+        </div>
+        
+        <div class="controls-sticky" id="controlsSticky">
+            <div class="container">
+                <div class="controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search heritage sites...">
+                    </div>
+                    <div class="filters">
+                        <select id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Natural">Natural</option>
+                        </select>
+                        <select id="distanceFilter">
+                            <option value="all">All Distances</option>
+                            <option value="0-100">0-100 km</option>
+                            <option value="100-500">100-500 km</option>
+                            <option value="500-1000">500-1000 km</option>
+                            <option value="1000+">1000+ km</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
             <div class="sites-grid" id="sitesGrid">
                 <!-- Sites will be loaded here -->
             </div>
