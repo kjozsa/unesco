@@ -257,7 +257,11 @@ function renderSites() {
     }
 
     sitesGrid.innerHTML = filteredSites.map((site, index) => `
-        <div class="site-card" style="animation-delay: ${index * 0.1}s">
+        <div class="site-card" 
+             style="animation-delay: ${index * 0.1}s"
+             data-unesco-id="${site.unesco_id}"
+             data-lat="${site.latitude}"
+             data-lng="${site.longitude}">
             <div class="site-image">
                 ${site.image_url ? `
                     <img src="${site.image_url}" alt="${site.name}" loading="lazy" onerror="this.parentElement.classList.add('image-error')">
@@ -275,8 +279,8 @@ function renderSites() {
                 <div class="site-header">
                     <h3 class="site-name">${site.name}</h3>
                     <div class="site-distance">
-                        <div class="distance-info">
-                            <i class="fas fa-map-marker-alt"></i>
+                        <div class="distance-info" data-action="directions" title="Click to get directions in Google Maps">
+                            <i class="fas fa-route"></i>
                             ${site.distance_from_reference_km} km from ${referenceLocation.name}
                         </div>
                         <div class="direction-indicator" title="Direction: ${site.direction.name}">
@@ -543,16 +547,30 @@ distanceFilter.addEventListener('change', filterSites);
 
 // Add click handlers for site cards
 document.addEventListener('click', (e) => {
+    // Check if clicked on distance info (for directions)
+    const distanceInfo = e.target.closest('.distance-info[data-action="directions"]');
+    if (distanceInfo) {
+        e.stopPropagation(); // Prevent card click
+        const siteCard = distanceInfo.closest('.site-card');
+        if (siteCard) {
+            const lat = siteCard.dataset.lat;
+            const lng = siteCard.dataset.lng;
+            
+            // Create Google Maps directions URL from reference location to site
+            const directionsUrl = `https://www.google.com/maps/dir/${referenceLocation.lat},${referenceLocation.lon}/${lat},${lng}`;
+            window.open(directionsUrl, '_blank');
+        }
+        return;
+    }
+    
+    // Check if clicked on site card (for UNESCO site)
     const siteCard = e.target.closest('.site-card');
     if (siteCard) {
-        // Extract coordinates from the card
-        const coordText = siteCard.querySelector('.site-coordinates').textContent;
-        const coords = coordText.match(/([-\d.]+)°, ([-\d.]+)°/);
-        if (coords) {
-            const lat = coords[1];
-            const lng = coords[2];
-            // Open in Google Maps
-            window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+        const unescoId = siteCard.dataset.unescoId;
+        if (unescoId) {
+            // Open UNESCO World Heritage Centre page
+            const unescoUrl = `https://whc.unesco.org/en/list/${unescoId}`;
+            window.open(unescoUrl, '_blank');
         }
     }
 });
