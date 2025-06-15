@@ -385,7 +385,7 @@ const highQualityImages = {
     '98': 'https://whc.unesco.org/uploads/sites/site_98_gallery.jpg',   // Plitvice
 };
 
-// Get better image URL with fallbacks
+// Get better image URL with fallbacks based on UNESCO website patterns
 function getBetterImageUrl(site) {
     const unescoId = site.unesco_id;
     
@@ -396,14 +396,38 @@ function getBetterImageUrl(site) {
         imageSources.push(highQualityImages[unescoId]);
     }
     
-    // Add multiple UNESCO image sources in order of preference
+    // Based on UNESCO website analysis, try these patterns in order of quality:
     imageSources.push(
-        // Higher resolution UNESCO gallery images
+        // Gallery images (often higher quality)
         `https://whc.unesco.org/uploads/sites/site_${unescoId}_gallery.jpg`,
-        // Alternative UNESCO formats
+        
+        // Document images (sometimes higher res)
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_docs.jpg`,
+        
+        // Numbered gallery images (multiple photos available)
         `https://whc.unesco.org/uploads/sites/site_${unescoId}_0001.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_0002.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_0003.jpg`,
+        
+        // Large format versions
         `https://whc.unesco.org/uploads/sites/site_${unescoId}_large.jpg`,
-        // Original as fallback
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_big.jpg`,
+        
+        // Alternative directory structure
+        `https://whc.unesco.org/uploads/sites/${unescoId}/site_${unescoId}.jpg`,
+        `https://whc.unesco.org/uploads/sites/${unescoId}/gallery_${unescoId}.jpg`,
+        
+        // Media directory
+        `https://whc.unesco.org/media/sites/site_${unescoId}.jpg`,
+        
+        // Images directory
+        `https://whc.unesco.org/images/sites/site_${unescoId}.jpg`,
+        
+        // Alternative extensions
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}.jpeg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}.png`,
+        
+        // Original as final fallback
         site.image_url || `https://whc.unesco.org/uploads/sites/site_${unescoId}.jpg`
     );
     
@@ -416,15 +440,51 @@ function handleImageError(img, imageSources) {
     const currentSrc = img.src;
     const currentIndex = sources.indexOf(currentSrc);
     
+    // Debug logging to console (can be removed in production)
+    console.log(`Image failed: ${currentSrc} (attempt ${currentIndex + 1}/${sources.length})`);
+    
     if (currentIndex < sources.length - 1) {
         // Try next image source
-        img.src = sources[currentIndex + 1];
+        const nextSrc = sources[currentIndex + 1];
+        console.log(`Trying next image: ${nextSrc}`);
+        img.src = nextSrc;
     } else {
         // All sources failed, show placeholder
+        console.log(`All image sources failed for site. Showing placeholder.`);
         img.parentElement.classList.add('image-error');
         img.style.display = 'none';
     }
 }
+
+// Log successful image loads (for debugging)
+function handleImageSuccess(img) {
+    console.log(`Image loaded successfully: ${img.src}`);
+}
+
+// Test function to discover working image patterns (for development)
+function testImagePatterns(unescoId) {
+    console.log(`Testing image patterns for UNESCO site ${unescoId}:`);
+    
+    const testPatterns = [
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_gallery.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_docs.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_0001.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_large.jpg`,
+        `https://whc.unesco.org/uploads/sites/${unescoId}/site_${unescoId}.jpg`,
+        `https://whc.unesco.org/media/sites/site_${unescoId}.jpg`,
+        `https://whc.unesco.org/images/sites/site_${unescoId}.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}.jpg`
+    ];
+    
+    testPatterns.forEach((url, index) => {
+        const img = new Image();
+        img.onload = () => console.log(`✅ WORKS: ${url} (${img.naturalWidth}x${img.naturalHeight})`);
+        img.onerror = () => console.log(`❌ FAILS: ${url}`);
+        img.src = url;
+    });
+}
+
+// Call this in console to test: testImagePatterns('147') or testImagePatterns('400')
 
 // Render sites
 function renderSites() {
@@ -447,7 +507,8 @@ function renderSites() {
                     <img src="${imageSources[0]}" 
                          alt="${site.name}" 
                          loading="lazy" 
-                         onerror="handleImageError(this, ${JSON.stringify(imageSources).replace(/"/g, '&quot;')})">
+                         onerror="handleImageError(this, ${JSON.stringify(imageSources).replace(/"/g, '&quot;')})"
+                         onload="handleImageSuccess(this)">
                     <div class="image-overlay">
                         <div class="site-category ${site.category.toLowerCase()}">${site.category}</div>
                     </div>
