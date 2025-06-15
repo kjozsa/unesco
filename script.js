@@ -53,6 +53,58 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return Math.round(distance * 100) / 100; // Round to 2 decimal places
 }
 
+// Calculate bearing (direction) between two points
+function calculateBearing(lat1, lon1, lat2, lon2) {
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const lat1Rad = lat1 * Math.PI / 180;
+    const lat2Rad = lat2 * Math.PI / 180;
+    
+    const y = Math.sin(dLon) * Math.cos(lat2Rad);
+    const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - 
+              Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+    
+    let bearing = Math.atan2(y, x) * 180 / Math.PI;
+    bearing = (bearing + 360) % 360; // Normalize to 0-360
+    
+    return bearing;
+}
+
+// Convert bearing to compass direction
+function bearingToCompass(bearing) {
+    const directions = [
+        { name: 'N', icon: '↑', range: [348.75, 11.25] },
+        { name: 'NNE', icon: '↗', range: [11.25, 33.75] },
+        { name: 'NE', icon: '↗', range: [33.75, 56.25] },
+        { name: 'ENE', icon: '↗', range: [56.25, 78.75] },
+        { name: 'E', icon: '→', range: [78.75, 101.25] },
+        { name: 'ESE', icon: '↘', range: [101.25, 123.75] },
+        { name: 'SE', icon: '↘', range: [123.75, 146.25] },
+        { name: 'SSE', icon: '↘', range: [146.25, 168.75] },
+        { name: 'S', icon: '↓', range: [168.75, 191.25] },
+        { name: 'SSW', icon: '↙', range: [191.25, 213.75] },
+        { name: 'SW', icon: '↙', range: [213.75, 236.25] },
+        { name: 'WSW', icon: '↙', range: [236.25, 258.75] },
+        { name: 'W', icon: '←', range: [258.75, 281.25] },
+        { name: 'WNW', icon: '↖', range: [281.25, 303.75] },
+        { name: 'NW', icon: '↖', range: [303.75, 326.25] },
+        { name: 'NNW', icon: '↖', range: [326.25, 348.75] }
+    ];
+    
+    for (const dir of directions) {
+        if (dir.range[0] > dir.range[1]) { // Handle wrap-around for North
+            if (bearing >= dir.range[0] || bearing <= dir.range[1]) {
+                return dir;
+            }
+        } else {
+            if (bearing >= dir.range[0] && bearing <= dir.range[1]) {
+                return dir;
+            }
+        }
+    }
+    
+    return directions[0]; // Default to North
+}
+
 // Get user's location
 function getUserLocation() {
     return new Promise((resolve, reject) => {
@@ -140,16 +192,31 @@ async function loadData() {
         const response = await fetch('unesco_sites_by_distance.json');
         const rawSites = await response.json();
         
-        // Recalculate distances based on reference location
-        allSites = rawSites.map(site => ({
-            ...site,
-            distance_from_reference_km: calculateDistance(
+        // Recalculate distances and directions based on reference location
+        allSites = rawSites.map(site => {
+            const distance = calculateDistance(
                 referenceLocation.lat,
                 referenceLocation.lon,
                 site.latitude,
                 site.longitude
-            )
-        }));
+            );
+            
+            const bearing = calculateBearing(
+                referenceLocation.lat,
+                referenceLocation.lon,
+                site.latitude,
+                site.longitude
+            );
+            
+            const direction = bearingToCompass(bearing);
+            
+            return {
+                ...site,
+                distance_from_reference_km: distance,
+                bearing: bearing,
+                direction: direction
+            };
+        });
 
         // Sort by new distances
         allSites.sort((a, b) => a.distance_from_reference_km - b.distance_from_reference_km);
@@ -191,28 +258,44 @@ function renderSites() {
 
     sitesGrid.innerHTML = filteredSites.map((site, index) => `
         <div class="site-card" style="animation-delay: ${index * 0.1}s">
-            <div class="site-header">
-                <div class="site-category ${site.category.toLowerCase()}">${site.category}</div>
-                <h3 class="site-name">${site.name}</h3>
-                <div class="site-distance">
-                    <i class="fas fa-map-marker-alt"></i>
-                    ${site.distance_from_reference_km} km from ${referenceLocation.name}
-                </div>
+            <div class="site-image">
+                ${site.image_url ? `
+                    <img src="${site.image_url}" alt="${site.name}" loading="lazy" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <div class="site-category ${site.category.toLowerCase()}">${site.category}</div>
+                    </div>
+                ` : `
+                    <div class="image-placeholder">
+                        <i class="fas fa-${site.category === 'Cultural' ? 'monument' : 'tree'}"></i>
+                        <div class="site-category ${site.category.toLowerCase()}">${site.category}</div>
+                    </div>
+                `}
             </div>
-            <div class="site-body">
-                <div class="site-info">
-                    <div class="info-item">
-                        <i class="fas fa-flag"></i>
-                        <span>${site.states}</span>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>Inscribed ${site.date_inscribed}</span>
+            <div class="site-content">
+                <div class="site-header">
+                    <h3 class="site-name">${site.name}</h3>
+                    <div class="site-distance">
+                        <div class="distance-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${site.distance_from_reference_km} km from ${referenceLocation.name}
+                        </div>
+                        <div class="direction-indicator" title="Direction: ${site.direction.name}">
+                            <span class="direction-arrow">${site.direction.icon}</span>
+                            <span class="direction-label">${site.direction.name}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="site-coordinates">
-                    <i class="fas fa-crosshairs"></i>
-                    ${site.latitude.toFixed(4)}°, ${site.longitude.toFixed(4)}°
+                <div class="site-body">
+                    <div class="site-info">
+                        <div class="info-item">
+                            <i class="fas fa-flag"></i>
+                            <span>${site.states}</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Inscribed ${site.date_inscribed}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

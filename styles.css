@@ -271,6 +271,8 @@ body {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
 }
 
 .site-card:hover {
@@ -278,56 +280,164 @@ body {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
-.site-header {
+/* Site image */
+.site-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.site-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.site-card:hover .site-image img {
+    transform: scale(1.05);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1rem;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     color: white;
-    padding: 1.5rem;
     position: relative;
 }
 
-.site-category {
+.image-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.image-error {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+.image-error::after {
+    content: '📷';
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+.site-category {
+    background: rgba(255, 255, 255, 0.9);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .site-category.cultural {
-    background: rgba(255, 193, 7, 0.9);
+    background: rgba(255, 193, 7, 0.95);
     color: #333;
 }
 
 .site-category.natural {
-    background: rgba(40, 167, 69, 0.9);
+    background: rgba(40, 167, 69, 0.95);
     color: white;
+}
+
+/* Site content */
+.site-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-header {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
 }
 
 .site-name {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     line-height: 1.4;
-    padding-right: 4rem;
+    color: #333;
 }
 
 .site-distance {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 1rem;
     font-weight: 500;
+    color: #667eea;
 }
 
-.site-distance i {
-    color: #ffd700;
+.distance-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.distance-info i {
+    color: #667eea;
+}
+
+.direction-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    transition: all 0.3s ease;
+}
+
+.direction-indicator:hover {
+    background: rgba(102, 126, 234, 0.15);
+    transform: scale(1.05);
+}
+
+.direction-arrow {
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.direction-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 25px;
+    text-align: center;
 }
 
 .site-body {
-    padding: 1.5rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    flex: 1;
 }
 
 .site-info {
@@ -348,16 +458,6 @@ body {
 .info-item i {
     color: #667eea;
     width: 16px;
-}
-
-.site-coordinates {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 0.75rem;
-    font-family: 'Courier New', monospace;
-    font-size: 0.85rem;
-    color: #666;
-    text-align: center;
 }
 
 /* Loading */
@@ -694,6 +794,14 @@ body {
 
     .site-info {
         grid-template-columns: 1fr;
+    }
+
+    .site-image {
+        height: 180px;
+    }
+
+    .image-placeholder i {
+        font-size: 2.5rem;
     }
 }
 
