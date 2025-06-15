@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNESCO Heritage Sites - Distance from Budapest</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-top">
+                    <div class="logo">
+                        <i class="fas fa-globe-europe"></i>
+                        <h1>UNESCO Heritage Explorer</h1>
+                    </div>
+                    <div class="header-location" id="headerLocation">
+                        <div class="location-compact">
+                            <div class="location-icon-small">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="location-text">
+                                <span class="location-label">Reference:</span>
+                                <span class="location-value" id="locationDisplayHeader">Loading...</span>
+                            </div>
+                            <button id="changeLocationHeaderBtn" class="change-btn" title="Change location">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="subtitle">Discover World Heritage Sites by distance from <span id="locationName">your location</span></p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search heritage sites...">
+                </div>
+                <div class="filters">
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Natural">Natural</option>
+                    </select>
+                    <select id="distanceFilter">
+                        <option value="all">All Distances</option>
+                        <option value="0-100">0-100 km</option>
+                        <option value="100-500">100-500 km</option>
+                        <option value="500-1000">500-1000 km</option>
+                        <option value="1000+">1000+ km</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <span class="stat-number" id="totalSites">0</span>
+                        <span class="stat-label">Heritage Sites</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-building"></i>
+                    <div>
+                        <span class="stat-number" id="culturalSites">0</span>
+                        <span class="stat-label">Cultural Sites</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-tree"></i>
+                    <div>
+                        <span class="stat-number" id="naturalSites">0</span>
+                        <span class="stat-label">Natural Sites</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-route"></i>
+                    <div>
+                        <span class="stat-number" id="avgDistance">0</span>
+                        <span class="stat-label">Avg Distance (km)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sites-grid" id="sitesGrid">
+                <!-- Sites will be loaded here -->
+            </div>
+
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p id="loadingText">Getting your location...</p>
+            </div>
+
+            <div class="location-prompt" id="locationPrompt">
+                <div class="prompt-content">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Choose Your Reference Location</h3>
+                    <p>Select how you'd like to calculate distances to UNESCO Heritage Sites:</p>
+                    <div class="location-options">
+                        <div class="location-option" id="useLocationOption">
+                            <i class="fas fa-crosshairs"></i>
+                            <h4>Use My Location</h4>
+                            <p>Get distances from your current position</p>
+                        </div>
+                        <div class="location-option" id="useBudapestOption">
+                            <i class="fas fa-city"></i>
+                            <h4>Use Budapest</h4>
+                            <p>Get distances from Budapest, Hungary</p>
+                        </div>
+                        <div class="location-option" id="chooseCityOption">
+                            <i class="fas fa-globe-americas"></i>
+                            <h4>Choose a City</h4>
+                            <p>Select from popular cities worldwide</p>
+                        </div>
+                    </div>
+                    <div class="city-selector" id="citySelector" style="display: none;">
+                        <h4>Select a City:</h4>
+                        <div class="city-grid">
+                            <button class="city-btn" data-city="paris">
+                                <i class="fas fa-monument"></i>
+                                <span>Paris</span>
+                                <small>France</small>
+                            </button>
+                            <button class="city-btn" data-city="newyork">
+                                <i class="fas fa-building"></i>
+                                <span>New York</span>
+                                <small>USA</small>
+                            </button>
+                            <button class="city-btn" data-city="london">
+                                <i class="fas fa-crown"></i>
+                                <span>London</span>
+                                <small>UK</small>
+                            </button>
+                            <button class="city-btn" data-city="tokyo">
+                                <i class="fas fa-torii-gate"></i>
+                                <span>Tokyo</span>
+                                <small>Japan</small>
+                            </button>
+                            <button class="city-btn" data-city="sydney">
+                                <i class="fas fa-water"></i>
+                                <span>Sydney</span>
+                                <small>Australia</small>
+                            </button>
+                            <button class="city-btn" data-city="cairo">
+                                <i class="fas fa-pyramid"></i>
+                                <span>Cairo</span>
+                                <small>Egypt</small>
+                            </button>
+                            <button class="city-btn" data-city="rome">
+                                <i class="fas fa-church"></i>
+                                <span>Rome</span>
+                                <small>Italy</small>
+                            </button>
+                            <button class="city-btn" data-city="beijing">
+                                <i class="fas fa-dragon"></i>
+                                <span>Beijing</span>
+                                <small>China</small>
+                            </button>
+                        </div>
+                        <button id="backToOptionsBtn" class="btn-back">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Options
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 UNESCO Heritage Explorer. Data sourced from UNESCO World Heritage List.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
