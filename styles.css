@@ -463,6 +463,12 @@ body {
     color: #3182ce;
 }
 
+.navigation-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .distance-info {
     display: flex;
     align-items: center;
@@ -526,6 +532,32 @@ body {
     letter-spacing: 0.5px;
     min-width: 25px;
     text-align: center;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.google-earth-btn {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.google-earth-btn:hover {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
 }
 
 .site-body {
@@ -851,6 +883,7 @@ body {
     margin-top: 3rem;
 }
 
+
 /* Responsive design */
 @media (max-width: 768px) {
     .logo h1 {
@@ -971,6 +1004,16 @@ body {
         grid-template-columns: 1fr;
         gap: 0.75rem;
     }
+
+    .navigation-buttons {
+        gap: 0.25rem;
+    }
+
+    .nav-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
 }
 
 /* Animations */
@@ -1015,6 +1058,7 @@ body {
 .empty-state p {
     opacity: 0.8;
 }
+
 }
 
 /* Extra small screens */

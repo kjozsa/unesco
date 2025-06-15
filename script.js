@@ -527,9 +527,14 @@ function renderSites() {
                             <i class="fas fa-route"></i>
                             ${site.distance_from_reference_km} km from ${referenceLocation.name}
                         </div>
-                        <div class="direction-indicator" title="Direction: ${site.direction.name}">
-                            <span class="direction-arrow">${site.direction.icon}</span>
-                            <span class="direction-label">${site.direction.name}</span>
+                        <div class="navigation-buttons">
+                            <button class="nav-btn google-earth-btn" data-action="google-earth" title="View in Google Earth" data-lat="${site.latitude}" data-lng="${site.longitude}">
+                                🌍
+                            </button>
+                            <div class="direction-indicator" title="Direction: ${site.direction.name}">
+                                <span class="direction-arrow">${site.direction.icon}</span>
+                                <span class="direction-label">${site.direction.name}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -763,6 +768,7 @@ function showLocationSettings() {
     showLocationPrompt();
 }
 
+
 // Event listeners
 useLocationOption.addEventListener('click', () => {
     hideLocationPrompt();
@@ -791,6 +797,17 @@ distanceFilter.addEventListener('change', filterSites);
 
 // Add click handlers for site cards
 document.addEventListener('click', (e) => {
+    // Check if clicked on Google Earth button
+    const googleEarthBtn = e.target.closest('.google-earth-btn[data-action="google-earth"]');
+    if (googleEarthBtn) {
+        e.stopPropagation(); // Prevent card click
+        const lat = googleEarthBtn.dataset.lat;
+        const lng = googleEarthBtn.dataset.lng;
+        const earthUrl = `https://earth.google.com/web/@${lat},${lng},1000a,1000d,35y,0h,0t,0r`;
+        window.open(earthUrl, '_blank');
+        return;
+    }
+    
     // Check if clicked on distance info (for directions)
     const distanceInfo = e.target.closest('.distance-info[data-action="directions"]');
     if (distanceInfo) {
@@ -800,7 +817,7 @@ document.addEventListener('click', (e) => {
             const lat = siteCard.dataset.lat;
             const lng = siteCard.dataset.lng;
             
-            // Create Google Maps directions URL from reference location to site
+            // Open Google Maps directly (no overlay)
             const directionsUrl = `https://www.google.com/maps/dir/${referenceLocation.lat},${referenceLocation.lon}/${lat},${lng}`;
             window.open(directionsUrl, '_blank');
         }
