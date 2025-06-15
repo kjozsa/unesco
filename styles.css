@@ -385,16 +385,31 @@ body {
 
 .image-error {
     background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.image-error::before {
+    content: '🏛️';
+    font-size: 4rem;
+    opacity: 0.6;
+    z-index: 1;
 }
 
 .image-error::after {
-    content: '📷';
+    content: 'Image not available';
     position: absolute;
-    top: 50%;
+    bottom: 1rem;
     left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3rem;
-    opacity: 0.5;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    opacity: 0.8;
+    z-index: 2;
 }
 
 .site-category {
@@ -520,9 +535,10 @@ body {
 
 .site-info {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr auto;
     gap: 1rem;
     margin-bottom: 1rem;
+    align-items: start;
 }
 
 .info-item {
@@ -536,6 +552,38 @@ body {
 .info-item i {
     color: #3182ce;
     width: 16px;
+}
+
+/* Country flags styling */
+.countries-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.country-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    background: rgba(49, 130, 206, 0.05);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(49, 130, 206, 0.1);
+    transition: all 0.2s ease;
+}
+
+.country-item:hover {
+    background: rgba(49, 130, 206, 0.1);
+    border-color: rgba(49, 130, 206, 0.2);
+    transform: scale(1.02);
+}
+
+/* Flag emoji styling */
+.country-item::first-letter {
+    font-size: 1.1em;
+    margin-right: 0.1rem;
 }
 
 /* Loading */
@@ -891,9 +939,6 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .site-info {
-        grid-template-columns: 1fr;
-    }
 
     .site-image {
         height: 180px;
@@ -911,6 +956,20 @@ body {
     .site-card::after {
         font-size: 0.9rem;
         padding: 0.75rem;
+    }
+    
+    .countries-list {
+        gap: 0.25rem;
+    }
+    
+    .country-item {
+        font-size: 0.8rem;
+        padding: 0.15rem 0.4rem;
+    }
+    
+    .site-info {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
 }
 

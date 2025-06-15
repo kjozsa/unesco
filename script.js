@@ -249,6 +249,183 @@ function updateStats() {
     avgDistanceEl.textContent = avgDist;
 }
 
+// Country flag emoji mappings
+const countryFlags = {
+    'Albania': '🇦🇱',
+    'Austria': '🇦🇹',
+    'Belgium': '🇧🇪',
+    'Bosnia and Herzegovina': '🇧🇦',
+    'Bulgaria': '🇧🇬',
+    'Croatia': '🇭🇷',
+    'Czechia': '🇨🇿',
+    'Czech Republic': '🇨🇿',
+    'France': '🇫🇷',
+    'Germany': '🇩🇪',
+    'Hungary': '🇭🇺',
+    'Italy': '🇮🇹',
+    'Montenegro': '🇲🇪',
+    'North Macedonia': '🇲🇰',
+    'Poland': '🇵🇱',
+    'Romania': '🇷🇴',
+    'Serbia': '🇷🇸',
+    'Slovakia': '🇸🇰',
+    'Slovenia': '🇸🇮',
+    'Spain': '🇪🇸',
+    'Switzerland': '🇨🇭',
+    'Ukraine': '🇺🇦',
+    'United Kingdom': '🇬🇧',
+    'UK': '🇬🇧',
+    'United States': '🇺🇸',
+    'USA': '🇺🇸',
+    'Canada': '🇨🇦',
+    'Japan': '🇯🇵',
+    'China': '🇨🇳',
+    'Australia': '🇦🇺',
+    'Egypt': '🇪🇬',
+    'Turkey': '🇹🇷',
+    'Greece': '🇬🇷',
+    'Portugal': '🇵🇹',
+    'Netherlands': '🇳🇱',
+    'Norway': '🇳🇴',
+    'Sweden': '🇸🇪',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Iceland': '🇮🇸',
+    'Ireland': '🇮🇪',
+    'Luxembourg': '🇱🇺',
+    'Malta': '🇲🇹',
+    'Cyprus': '🇨🇾',
+    'Estonia': '🇪🇪',
+    'Latvia': '🇱🇻',
+    'Lithuania': '🇱🇹',
+    'Belarus': '🇧🇾',
+    'Moldova': '🇲🇩',
+    'Russia': '🇷🇺',
+    'Georgia': '🇬🇪',
+    'Armenia': '🇦🇲',
+    'Azerbaijan': '🇦🇿',
+    'Kazakhstan': '🇰🇿',
+    'Uzbekistan': '🇺🇿',
+    'Kyrgyzstan': '🇰🇬',
+    'Tajikistan': '🇹🇯',
+    'Turkmenistan': '🇹🇲',
+    'Afghanistan': '🇦🇫',
+    'Pakistan': '🇵🇰',
+    'India': '🇮🇳',
+    'Bangladesh': '🇧🇩',
+    'Sri Lanka': '🇱🇰',
+    'Nepal': '🇳🇵',
+    'Bhutan': '🇧🇹',
+    'Myanmar': '🇲🇲',
+    'Thailand': '🇹🇭',
+    'Laos': '🇱🇦',
+    'Cambodia': '🇰🇭',
+    'Vietnam': '🇻🇳',
+    'Malaysia': '🇲🇾',
+    'Singapore': '🇸🇬',
+    'Indonesia': '🇮🇩',
+    'Philippines': '🇵🇭',
+    'Brunei': '🇧🇳',
+    'Mongolia': '🇲🇳',
+    'South Korea': '🇰🇷',
+    'North Korea': '🇰🇵',
+    'Taiwan': '🇹🇼',
+    'Hong Kong': '🇭🇰',
+    'Macau': '🇲🇴'
+};
+
+// Get country flag emoji
+function getCountryFlag(countryName) {
+    // Clean up country name
+    const cleanName = countryName.trim();
+    
+    // Direct lookup
+    if (countryFlags[cleanName]) {
+        return countryFlags[cleanName];
+    }
+    
+    // Try some common variations
+    const variations = [
+        cleanName.replace('Republic of ', ''),
+        cleanName.replace('Kingdom of ', ''),
+        cleanName.replace('United States of America', 'USA'),
+        cleanName.replace('United Kingdom of Great Britain and Northern Ireland', 'UK'),
+        cleanName.replace('Czech Republic', 'Czechia')
+    ];
+    
+    for (const variation of variations) {
+        if (countryFlags[variation]) {
+            return countryFlags[variation];
+        }
+    }
+    
+    // Return a generic flag emoji if not found
+    return '🏳️';
+}
+
+// Format countries with flags
+function formatCountriesWithFlags(statesString) {
+    const countries = statesString.split(',').map(country => country.trim());
+    
+    return countries.map(country => {
+        const flag = getCountryFlag(country);
+        return `<span class="country-item">${flag} ${country}</span>`;
+    }).join('');
+}
+
+// High-quality image mappings for popular sites
+const highQualityImages = {
+    // Some examples of better quality images (these would need to be verified)
+    '400': 'https://whc.unesco.org/uploads/sites/site_400_gallery.jpg', // Budapest
+    '616': 'https://whc.unesco.org/uploads/sites/site_616_gallery.jpg', // Prague
+    '29': 'https://whc.unesco.org/uploads/sites/site_29_gallery.jpg',   // Kraków
+    '394': 'https://whc.unesco.org/uploads/sites/site_394_gallery.jpg', // Venice
+    '95': 'https://whc.unesco.org/uploads/sites/site_95_gallery.jpg',   // Dubrovnik
+    '97': 'https://whc.unesco.org/uploads/sites/site_97_gallery.jpg',   // Split
+    '98': 'https://whc.unesco.org/uploads/sites/site_98_gallery.jpg',   // Plitvice
+};
+
+// Get better image URL with fallbacks
+function getBetterImageUrl(site) {
+    const unescoId = site.unesco_id;
+    
+    // Start with high-quality mapping if available
+    const imageSources = [];
+    
+    if (highQualityImages[unescoId]) {
+        imageSources.push(highQualityImages[unescoId]);
+    }
+    
+    // Add multiple UNESCO image sources in order of preference
+    imageSources.push(
+        // Higher resolution UNESCO gallery images
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_gallery.jpg`,
+        // Alternative UNESCO formats
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_0001.jpg`,
+        `https://whc.unesco.org/uploads/sites/site_${unescoId}_large.jpg`,
+        // Original as fallback
+        site.image_url || `https://whc.unesco.org/uploads/sites/site_${unescoId}.jpg`
+    );
+    
+    return imageSources;
+}
+
+// Handle image loading errors with fallbacks
+function handleImageError(img, imageSources) {
+    const sources = typeof imageSources === 'string' ? JSON.parse(imageSources) : imageSources;
+    const currentSrc = img.src;
+    const currentIndex = sources.indexOf(currentSrc);
+    
+    if (currentIndex < sources.length - 1) {
+        // Try next image source
+        img.src = sources[currentIndex + 1];
+    } else {
+        // All sources failed, show placeholder
+        img.parentElement.classList.add('image-error');
+        img.style.display = 'none';
+    }
+}
+
 // Render sites
 function renderSites() {
     if (filteredSites.length === 0) {
@@ -256,15 +433,21 @@ function renderSites() {
         return;
     }
 
-    sitesGrid.innerHTML = filteredSites.map((site, index) => `
+    sitesGrid.innerHTML = filteredSites.map((site, index) => {
+        const imageSources = getBetterImageUrl(site);
+        
+        return `
         <div class="site-card" 
              style="animation-delay: ${index * 0.1}s"
              data-unesco-id="${site.unesco_id}"
              data-lat="${site.latitude}"
              data-lng="${site.longitude}">
             <div class="site-image">
-                ${site.image_url ? `
-                    <img src="${site.image_url}" alt="${site.name}" loading="lazy" onerror="this.parentElement.classList.add('image-error')">
+                ${imageSources.length > 0 ? `
+                    <img src="${imageSources[0]}" 
+                         alt="${site.name}" 
+                         loading="lazy" 
+                         onerror="handleImageError(this, ${JSON.stringify(imageSources).replace(/"/g, '&quot;')})">
                     <div class="image-overlay">
                         <div class="site-category ${site.category.toLowerCase()}">${site.category}</div>
                     </div>
@@ -292,8 +475,7 @@ function renderSites() {
                 <div class="site-body">
                     <div class="site-info">
                         <div class="info-item">
-                            <i class="fas fa-flag"></i>
-                            <span>${site.states}</span>
+                            <span class="countries-list">${formatCountriesWithFlags(site.states)}</span>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-calendar"></i>
@@ -303,7 +485,8 @@ function renderSites() {
                 </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Show empty state
