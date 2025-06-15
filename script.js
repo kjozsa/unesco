@@ -523,15 +523,15 @@ function renderSites() {
                 <div class="site-header">
                     <h3 class="site-name">${site.name}</h3>
                     <div class="site-distance">
-                        <div class="distance-info" data-action="directions" title="Click to get directions in Google Maps">
+                        <div class="distance-info" data-action="directions">
                             <i class="fas fa-route"></i>
                             ${site.distance_from_reference_km} km from ${referenceLocation.name}
                         </div>
                         <div class="navigation-buttons">
-                            <button class="nav-btn google-earth-btn" data-action="google-earth" title="View in Google Earth" data-lat="${site.latitude}" data-lng="${site.longitude}">
+                            <button class="nav-btn google-earth-btn" data-action="google-earth" data-lat="${site.latitude}" data-lng="${site.longitude}">
                                 🌍
                             </button>
-                            <div class="direction-indicator" title="Direction: ${site.direction.name}">
+                            <div class="direction-indicator">
                                 <span class="direction-arrow">${site.direction.icon}</span>
                                 <span class="direction-label">${site.direction.name}</span>
                             </div>
