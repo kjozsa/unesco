@@ -38,7 +38,7 @@ A beautiful, interactive web application that displays UNESCO World Heritage Sit
 
 ## 🚀 Live Demo
 
-Visit the live site: [UNESCO Heritage Explorer](https://YOUR_USERNAME.github.io/unesco-heritage-explorer/)
+Visit the live site: [UNESCO Heritage Explorer](https://kjozsa.github.io/unesco/)
 
 ## 📊 Data Source
 
